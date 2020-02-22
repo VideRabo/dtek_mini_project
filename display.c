@@ -272,3 +272,35 @@ char * itoaconv( int num )
      * we must add 1 in order to return a pointer to the first occupied position. */
     return( &itoa_buffer[ i + 1 ] );
 }
+
+void render(GameObject collision_group[], int cg_count)
+{
+    for(int i = 0; i < cg_count; i++)
+    {
+        if(collision_group[i].type == Brick)
+        {
+            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width - 1,
+                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+        }
+
+        //Change size of ball
+        if(collision_group[i].type == Ball)
+        {
+            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
+                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1)
+
+        }
+        /* The lower part of the pad is floored to the lower part of the screen (y = 31) */
+        if(collision_group[i].type == Pad)
+        {
+            //Lower part of pad
+            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
+                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+
+            //Upper part of pad
+            drawRectangle(collision_group[i].x + 1, collision_group[i].x + collision_group[i].width - 2,
+                          collision_group[i].y - collision_group[i].height, collision_group[i].y, 1);
+        }
+
+    }
+}
