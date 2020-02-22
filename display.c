@@ -301,6 +301,5 @@ void render(GameObject collision_group[], int cg_count)
             drawRectangle(collision_group[i].x + 1, collision_group[i].x + collision_group[i].width - 2,
                           collision_group[i].y - collision_group[i].height, collision_group[i].y, 1);
         }
-
     }
 }
