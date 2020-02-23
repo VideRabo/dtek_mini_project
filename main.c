@@ -37,7 +37,6 @@ void game_tick() {
     // render
 }
 
-
 int screen = 0;
 /*
 0 - lobby
@@ -56,6 +55,8 @@ return;
 
 /* Only display top 3 scores (globally) due to lack of room on display.
    Might be changed */
+
+#if TESTENV == 0
 void leaderboard()
 {
     while(1)
@@ -146,7 +147,7 @@ main_loop()
 		/* display score. Press 1 to continue to lobby */
         /* In progress */
 }
-
+#endif
 
 
 
@@ -172,6 +173,7 @@ int main(void) {
         game_tick();
     }
     
+    #if TESTENV == 0
     /* Testing menues etc */
     display_string(0, "");
     display_string(1, "");
@@ -181,6 +183,7 @@ int main(void) {
     display_update(0);
     display_update(1);
     main_loop();
-    
+    # endif
+
     return 0;
 }

@@ -1,6 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Environment
+#define TESTENV 0
+
 // Hardware specifics
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 32
