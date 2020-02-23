@@ -11,17 +11,6 @@
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int );
 
-#define DISPLAY_CHANGE_TO_COMMAND_MODE (PORTFCLR = 0x10)
-#define DISPLAY_CHANGE_TO_DATA_MODE (PORTFSET = 0x10)
-
-#define DISPLAY_ACTIVATE_RESET (PORTGCLR = 0x200)
-#define DISPLAY_DO_NOT_RESET (PORTGSET = 0x200)
-
-#define DISPLAY_ACTIVATE_VDD (PORTFCLR = 0x40)
-#define DISPLAY_ACTIVATE_VBAT (PORTFCLR = 0x20)
-
-#define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
-#define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 static uint8_t mapPixels[128][4];
 char textbuffer[4][16];
 /* quicksleep:
@@ -120,24 +109,24 @@ void drawRectangle(uint8_t x0, uint8_t x1, uint8_t y0, uint8_t y1, int activateP
     uint8_t y = y0;
 		uint8_t x;
 
-		for(x = x0; x < x1; x++)
-		{
-		    for(y = y0; y < y1; y++)
-				    drawPixel(x,y, activatePixel);
-	  }
+	for(x = x0; x < x1; x++)
+	{
+	    for(y = y0; y < y1; y++)
+	        drawPixel(x,y, activatePixel);
+	}
 }
 
 /* Function clearScreen clears all pixels on the screen */
 void clearScreen()
 {
-    uint8_t x;
-		uint8_t y;
+    uint8_t x; 
+    uint8_t y;
 
-		for(x = 0; x < 128; x++)
-		{
+    for(x = 0; x < 128; x++)
+    {
 		    for(y = 0; y < 32; y++)
-				    drawPixel(x,y, 0);
-	  }
+			drawPixel(x,y, 0);
+    }
 }
 
 void display_string(int line, char *s)
