@@ -18,9 +18,12 @@
 // Game logic
 #define MAX_NUM_OBJECT 50 // per collision group
 
-// Physics engine
-#define AIR_RESISTANCE 0.5 // ratio of speed that will be subtracted
+// Game Settings
+#define PAD_SIZE 10
+#define BALL_SIZE 2
+#define BALL_SPEED 1.0
+#define AIR_RESISTANCE 0.2 // ratio of speed that will be subtracted
 #define AR_MIN_VELOCITY 2.0 // air resistance min velocity before it has an effect
-#define GRAVITY 0
+#define GRAVITY_ACCELERATION 0.0
 
 #endif

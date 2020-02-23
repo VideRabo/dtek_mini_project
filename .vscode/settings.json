@@ -2,6 +2,7 @@
     "files.associations": {
         "mapmanager.h": "c",
         "gamelogic.h": "c",
-        "collisions.h": "c"
+        "collisions.h": "c",
+        "settings.h": "c"
     }
 }

@@ -2,15 +2,20 @@
 #define GAMELOGIC_H
 
 #include "config.h"
+#include "settings.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
+
+// TYPES
 
 enum object_type {Brick = 1, Upgrade = 2, Ball = 3, Pad = 4};
 
 // TODO add collision function pointer
 typedef struct game_object {
     short type; // 1: brick, 2: upgrade, 3: ball, 4: pad
-    short subtype;
+    short subtype; // under categories e.g. basic brick, unbreakable brick
 
     // size
     short height;
@@ -28,28 +33,41 @@ typedef struct game_object {
     float speed_x;
     float speed_y;
     
-    short update_position; // if 0, position will not be updated
+    short update_position; // if false, position will not be updated
 
     // collisions
     short collide; // collision will only be detected if both objects have collide enabled
-    void (*collision_function)(struct game_object *, struct game_object *, short); // parameters: this object, other object, collision direction 
-
+    void (*collision_function)(struct game_object *, struct game_object *, short); // handles the collision for this object. parameters: this object, other object, collision direction 
+    
+    // interaction
+    short penetrable; // if true, other objects will pass trough rather than bounce on this object when colliding
+    short damage; // nr hitpoints to subtract from other object on collision
     short hitpoints; // -1 if unbreakable
 
     // physics
-    unsigned short mass;
-    short gravity; 
+    short gravity; // if true, object will be affected by gravity
 } GameObject;
 
+
+// PUBLIC FUNCTIONS
+
+// utility function to easily create presets of GameObjects with different type and subtype
 GameObject create_game_object(short type, short subtype, short x, short y, short speed_x, short speed_y);
 
+// add a GameObject to a collision group
 void add_game_object(GameObject object, GameObject collision_group[], int *cg_count);
 
+// update position and speed for for all GameObjects in a given collision group
 void update_positions(GameObject collision_group[], int cg_count);
 
+// check if object collides and if thats the case, call its collision function
 void check_for_collisions(GameObject cg1[], int cg1_count, GameObject cg2[], int cg2_count);
+
+
+// COLLISION FUNCTIONS
 
 void collide_ball(GameObject * this, GameObject * other_obj, short direction);
 
+void collide_brick(GameObject * this, GameObject * other_obj, short direction);
 
 #endif

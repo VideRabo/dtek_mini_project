@@ -3,7 +3,8 @@
 static int map_count = 0; // number of maps
 static Map registered_maps[MAX_NUM_MAPS];
 
-void register_map(char map[GRID_ROWS][GRID_COLUMNS], char *name) {
+// register a map with its name and settings - to be loaded with load_registered_map()
+void register_map(char map[GRID_ROWS][GRID_COLUMNS], GameSettings map_settings, char *name) {
     if (map_count <= MAX_NUM_MAPS) {
         registered_maps[map_count] = (Map) {};
         strcpy(registered_maps[map_count].name, name);
@@ -16,6 +17,8 @@ void register_map(char map[GRID_ROWS][GRID_COLUMNS], char *name) {
                 registered_maps[map_count].layout[i][j] = map[i][j];
             }
         }
+
+        copy_settings(&registered_maps[map_count].settings, &map_settings);
     
         map_count++;
     }
@@ -61,5 +64,20 @@ static void load_map(char map[GRID_ROWS][GRID_COLUMNS], GameObject collision_gro
 void load_registered_map(int map_index, GameObject collision_group[], int *cg_count) {
     if (map_index >= 0 && map_index < map_count) {
         load_map(registered_maps[map_index].layout, collision_group, cg_count);
+        update_settings(registered_maps[map_index].settings, 1); // TODO change to 1 ? meaning all settings need to be entered for each map
     }
+}
+
+void d_print_map_names() {
+    int num_maps = get_num_maps();
+    char ** map_names = get_map_names();
+
+    printf("There are %d registered maps:\n", num_maps);
+
+    for (int i = 0; i < num_maps; i++)
+    {
+        printf("%d: %s\n", i, map_names[i]);
+    }
+    
+    free(map_names); 
 }
