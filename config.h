@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 // Hardware specifics
-#define DISPLAY_WIDTH 200
-#define DISPLAY_HEIGHT 100
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 32
 
 // Grid
 #define GRID_COLUMNS 10

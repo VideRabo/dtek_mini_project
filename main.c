@@ -37,6 +37,119 @@ void game_tick() {
     // render
 }
 
+
+int screen = 0;
+/*
+0 - lobby
+1 - leaderboard
+2 - game
+
+
+/* All useful initializationcalls */
+void init()
+{
+return;
+
+
+}
+
+
+/* Only display top 3 scores (globally) due to lack of room on display.
+   Might be changed */
+void leaderboard()
+{
+    while(1)
+    {
+	display_string(0, "");
+	display_string(1, "");
+	display_string(2, "");
+	display_string(3, "");
+        display_string(0, "Top 3  exit(3)");
+
+	/* IN PROGRESS */
+	int i = 0;
+	for(i = 0; i < 3; i++)
+	{
+	//display highscores
+
+
+	}
+
+	//display highscore
+	display_update(0);
+        //button 3 to exit to lobby (fancy animation perhaps)
+        if(getbtns() & 1)
+        {
+            screen = 0;
+            break;
+        }
+    }
+
+}
+
+void lobby()
+{
+    while(1)
+    {
+        //text, animation
+	display_string(0, "");
+	display_string(1, "");
+	display_string(2, "");
+	display_string(0, "LOBBY");
+	display_string(1, "(1) game");
+	display_string(2, "(2) leaderboard");
+        display_update(0);
+
+        /* Game */
+      	/*if(getbtns() & 1)
+        {
+            screen = 2;
+            break;
+        }*/
+
+        //button 2 to enter leaderboard/highscore list
+        /* Leaderboard */
+        if(getbtns() & 2)
+        {
+            screen = 1;
+            break;
+        }
+    }
+}
+
+
+main_loop()
+{
+    init();
+    while(1)
+    {
+        /* Screen will be initialized to 0. First iteration --> lobby */
+        if(screen == 0)
+        {
+            quicksleep(1000000);
+            lobby();
+        }
+
+        if(screen == 1)
+        {
+            quicksleep(1000000);
+            leaderboard();
+        }
+
+        /* Game */
+        if(screen == 2)
+        {
+	   //gametick etc. If gametick returns 1, we're done
+        }
+    }
+
+		/* display score. Press 1 to continue to lobby */
+        /* In progress */
+}
+
+
+
+
 int main(void) {
     reset_settings();
 
@@ -59,6 +172,15 @@ int main(void) {
         game_tick();
     }
     
-
+    /* Testing menues etc */
+    display_string(0, "");
+    display_string(1, "");
+    display_string(2, "");
+    display_string(3, "");
+    clearScreen();
+    display_update(0);
+    display_update(1);
+    main_loop();
+    
     return 0;
 }
