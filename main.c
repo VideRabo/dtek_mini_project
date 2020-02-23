@@ -56,25 +56,23 @@ void leaderboard()
 {
     while(1)
     {
-				display_string(0, "");
-				display_string(1, "");
-				display_string(2, "");
-				display_string(3, "");
+	display_string(0, "");
+	display_string(1, "");
+	display_string(2, "");
+	display_string(3, "");
         display_string(0, "Top 3  exit(3)");
 
-				/* IN PROGRESS */
+	/* IN PROGRESS */
+	int i = 0;
+	for(i = 0; i < 3; i++)
+	{
+	//display highscores
 
 
-				int i = 0;
-				for(i = 0; i < 3; i++)
-				{
-				    //display highscores
+	}
 
-
-				}
-
-				//display highscore
-				display_update(0);
+	//display highscore
+	display_update(0);
         //button 3 to exit to lobby (fancy animation perhaps)
         if(getbtns() & 1)
         {
@@ -90,12 +88,12 @@ void lobby()
     while(1)
     {
         //text, animation
-				display_string(0, "");
-				display_string(1, "");
-				display_string(2, "");
-				display_string(0, "LOBBY");
-				display_string(1, "(1) game");
-				display_string(2, "(2) leaderboard");
+	display_string(0, "");
+	display_string(1, "");
+	display_string(2, "");
+	display_string(0, "LOBBY");
+	display_string(1, "(1) game");
+	display_string(2, "(2) leaderboard");
         display_update(0);
 
         /* Game */
@@ -137,9 +135,9 @@ main_loop()
         /* Game */
         if(screen == 2)
         {
-				     //gametick etc. If gametick returns 1, we're done
+	   //gametick etc. If gametick returns 1, we're done
         }
-		}
+    }
 
 		/* display score. Press 1 to continue to lobby */
         /* In progress */
@@ -175,14 +173,13 @@ int main(void) {
     
     /* Testing menues etc */
     display_string(0, "");
-	display_string(1, "");
-	display_string(2, "");
-	display_string(3, "");
-	clearScreen();
-	display_update(0);
-	display_update(1);
-    
-	main_loop();
+    display_string(1, "");
+    display_string(2, "");
+    display_string(3, "");
+    clearScreen();
+    display_update(0);
+    display_update(1);
+    main_loop();
     
     return 0;
 }
