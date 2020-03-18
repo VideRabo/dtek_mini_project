@@ -1,0 +1,12 @@
+settings.c.o: settings.c settings.h /opt/mcb32tools/include/stdio.h \
+ /opt/mcb32tools/include/klibc/extern.h \
+ /opt/mcb32tools/include/klibc/inline.h \
+ /opt/mcb32tools/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdarg.h \
+ /opt/mcb32tools/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stddef.h \
+ /opt/mcb32tools/include/string.h config.h
+settings.c settings.h /opt/mcb32tools/include/stdio.h :
+ /opt/mcb32tools/include/klibc/extern.h :
+ /opt/mcb32tools/include/klibc/inline.h :
+ /opt/mcb32tools/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdarg.h :
+ /opt/mcb32tools/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stddef.h :
+ /opt/mcb32tools/include/string.h config.h :

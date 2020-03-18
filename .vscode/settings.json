@@ -3,6 +3,8 @@
         "mapmanager.h": "c",
         "gamelogic.h": "c",
         "collisions.h": "c",
-        "settings.h": "c"
+        "settings.h": "c",
+        "missing_funcs.h": "c",
+        "display.h": "c"
     }
 }

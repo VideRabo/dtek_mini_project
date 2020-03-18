@@ -6,7 +6,22 @@
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
-#include "mipslab.h"  /* Declatations for these labs */
+#include "mipslab.h"
+#include "gamelogic.h"
+#include "display.h"
+#include "input.h"
+
+#define DISPLAY_CHANGE_TO_COMMAND_MODE (PORTFCLR = 0x10)
+#define DISPLAY_CHANGE_TO_DATA_MODE (PORTFSET = 0x10)
+
+#define DISPLAY_ACTIVATE_RESET (PORTGCLR = 0x200)
+#define DISPLAY_DO_NOT_RESET (PORTGSET = 0x200)
+
+#define DISPLAY_ACTIVATE_VDD (PORTFCLR = 0x40)
+#define DISPLAY_ACTIVATE_VBAT (PORTFCLR = 0x20)
+
+#define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
+#define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int );
@@ -117,15 +132,16 @@ void drawRectangle(uint8_t x0, uint8_t x1, uint8_t y0, uint8_t y1, int activateP
 }
 
 /* Function clearScreen clears all pixels on the screen */
-void clearScreen()
+void display_clear()
 {
     uint8_t x; 
     uint8_t y;
 
     for(x = 0; x < 128; x++)
     {
-		    for(y = 0; y < 32; y++)
-			drawPixel(x,y, 0);
+      for(y = 0; y < 4; y++)
+      mapPixels[x][y] = 0;
+			//drawPixel(x,y, 0);
     }
 }
 
@@ -266,29 +282,161 @@ void render(GameObject collision_group[], int cg_count)
 {
     for(int i = 0; i < cg_count; i++)
     {
+      // render brick
         if(collision_group[i].type == Brick)
         {
+          switch (collision_group[i].subtype)
+          {
+          case 1:
             drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width - 1,
-                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
-        }
-
-        //Change size of ball
-        if(collision_group[i].type == Ball)
-        {
-            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
-                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1)
-
-        }
-        /* The lower part of the pad is floored to the lower part of the screen (y = 31) */
-        if(collision_group[i].type == Pad)
-        {
-            //Lower part of pad
-            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
-                          collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
-
-            //Upper part of pad
+                        collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+                        
             drawRectangle(collision_group[i].x + 1, collision_group[i].x + collision_group[i].width - 2,
-                          collision_group[i].y - collision_group[i].height, collision_group[i].y, 1);
+                        collision_group[i].y + 1, collision_group[i].y + collision_group[i].height - 1, 0);
+            break;
+          case 2:
+            for (int j = 0; j < BRICK_WIDTH - 1; j += 2) {
+              drawRectangle(collision_group[i].x + j, collision_group[i].x + j + 1,
+                       collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+            }
+            break;
+          case 3:
+            drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width - 1,
+                        collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+            break;
+          }
+        }
+        // render ball
+        else if(collision_group[i].type == Ball)
+        {
+          drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
+                        collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
+
+        }
+        // render pad
+        else if(collision_group[i].type == Pad)
+        {
+          //Lower part of pad
+          drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width,
+                        collision_group[i].y, collision_group[i].y + 1, 1);
+
+          //Upper part of pad
+          drawRectangle(collision_group[i].x + 1, collision_group[i].x + collision_group[i].width - 1,
+                        collision_group[i].y - 1, collision_group[i].y, 1);
+        }
+
+        else if (collision_group[i].type == Upgrade) {
+          /*for (int k = 0; k < collision_group[i].width; k++)
+          {
+            for (int j = 0; j < collision_group[i].height; j++)
+            {
+              drawPixel(collision_group[i].x + k, collision_group[i].y + j, (k+j) % 2);
+            }
+            
+          }*/
+          drawRectangle(collision_group[i].x, collision_group[i].x + collision_group[i].width - 1,
+                        collision_group[i].y, collision_group[i].y + collision_group[i].height, 1);
         }
     }
+}
+
+void render_menu(char * title, char * option_names[20], void (*option_func[]) (int),  int num_options) {
+  static int selected = 0;
+  static int top = 0;
+
+  static short active_last = 0;
+
+  if (!active_last && input_status.btn1 && selected < num_options - 1) { // go downward
+    active_last = 1;
+    (selected)++;
+    if (selected > top + 2) {
+      (top)++;
+    }
+  } else if (!active_last && input_status.btn2 && selected > 0) { // go upward
+    active_last = 1;
+    (selected)--;
+    if (selected < top) {
+      (top)--;
+    }
+  } else if (!active_last && input_status.btn3 && option_func[selected] != NULL) { // select current
+    active_last = 1;
+    (*option_func[selected])(selected);
+    top = 0;
+    selected = 0;
+  } else if (!input_status.btn3 && !input_status.btn2 && !input_status.btn1) { // reset last_active
+    active_last = 0;
+  }
+
+  int selected_pos = selected - top;
+  char select_marker[20] = "> ";
+  
+  // print to display
+  for (short i = 0; i < 3; i++)
+  {
+    if (option_names[top + i]) {
+      display_string(i + 1, selected_pos == i ? strcat(select_marker, option_names[top + i]) : option_names[top + i]);
+    } else {
+      display_string(i + 1, "");
+    }
+  }
+  display_string(0, title);
+
+  display_update(0);
+}
+
+void death_animation() {
+  for (int i = 0; i < 4; i++)
+  {
+    display_string(i, "");
+  }
+  
+  display_string(1, "    GAME OVER");
+  display_update(0);
+  quicksleep(10000000);
+}
+
+void lost_ball_animation() {
+  for (int i = 0; i < 4; i++)
+  {
+    display_string(i, "");
+  }
+
+  char lives[20] = "    ";
+
+  display_string(1, "    You have");
+  display_string(2, strcat(strcat(lives, itoaconv(game_status.lives)), " lives"));
+  display_update(0);
+  quicksleep(10000000);
+}
+
+void new_game_animation(char * name) {
+  for (int i = 0; i < 4; i++)
+  {
+    display_string(i, "");
+  }
+
+  char prefix[20] = "> ";
+  display_string(1, strcat(prefix, name));
+  //display_string(2, name);
+  display_update(0);
+  quicksleep(5000000);
+  lost_ball_animation();
+}
+
+void cleared_level_animation() {
+  for (int i = 0; i < 4; i++)
+  {
+    display_string(i, "");
+  }
+
+  char lives[20] = "   ";
+  char points[20] = "   ";
+
+  display_string(0, " LEVEL CLEARED");
+  display_string(2, strcat(strcat(lives, itoaconv(game_status.lives)), " lives"));
+  display_string(3, strcat(strcat(points, itoaconv(game_status.points)), " points"));
+  
+
+  display_update(0);
+  quicksleep(10000000);
 }

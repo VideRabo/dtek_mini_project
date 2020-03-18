@@ -96,6 +96,7 @@ void remove_buffs() {
 }
 
 void d_print_settings() {
+    #if TESTENV == 1
     printf("### game_settings ###\n");
     printf("(%d) : pad_size %d\n", settings_duration.pad_size, game_settings.pad_size);
     printf("(%d) : ball_size %d\n", settings_duration.ball_size, game_settings.ball_size);
@@ -103,4 +104,5 @@ void d_print_settings() {
     printf("(%d) : air_resistance %f\n", settings_duration.air_resistance, game_settings.air_resistance);
     printf("(%d) : ar_minimum_velocity %f\n", settings_duration.ar_minimum_velocity, game_settings.ar_minimum_velocity);
     printf("(%d) : gravity_acceleration %f\n", settings_duration.gravity_acceleration, game_settings.gravity_acceleration);
+    #endif
 }
